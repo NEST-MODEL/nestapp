@@ -1,49 +1,55 @@
-// Импорты Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = { /* ТВОИ ДАННЫЕ */ };
+const firebaseConfig = {
+    apiKey: "ТВОЙ_API_KEY",
+    authDomain: "nest-app-dfae0.firebaseapp.com",
+    projectId: "nest-app-dfae0",
+    storageBucket: "nest-app-dfae0.appspot.com",
+    messagingSenderId: "...",
+    appId: "..."
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Применение темы из localStorage
-window.onload = () => {
-    const savedColor = localStorage.getItem('accentColor');
-    if (savedColor) document.documentElement.style.setProperty('--accent-color', savedColor);
-};
+// --- ГЛОБАЛЬНЫЕ ФУНКЦИИ (чтобы HTML их видел) ---
 
-function toggleSettings() {
-    document.getElementById('settingsMenu').classList.toggle('hidden');
-}
-
-function renderPage(page) {
-    const app = document.getElementById('app');
+window.renderPage = function(page) {
+    const appContainer = document.getElementById('app');
     document.getElementById('settingsMenu').classList.add('hidden');
 
-    const pages = {
-        feed: `<h1 class="text-3xl font-bold">Лента постов</h1>`,
-        chats: `<h1 class="text-3xl font-bold">Чаты</h1>`,
-        profile: `<h1 class="text-3xl font-bold">Профиль пользователя</h1>`,
+    const content = {
+        feed: `<h1 class="text-3xl font-bold">Лента постов</h1><p class="text-gray-400 mt-4">Здесь будут посты из Firebase.</p>`,
+        chats: `<h1 class="text-3xl font-bold">Ваши чаты</h1>`,
+        profile: `<h1 class="text-3xl font-bold">Ваш профиль</h1>`,
         custom: `
             <h1 class="text-3xl font-bold">Кастомизация</h1>
-            <div class="mt-8 bg-card p-6 rounded-2xl max-w-sm">
-                <p class="mb-4">Выберите акцентный цвет:</p>
-                <input type="color" onchange="changeColor(this.value)" class="w-full h-12 cursor-pointer bg-transparent">
+            <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl max-w-sm border border-white/5">
+                <p class="mb-4 text-gray-300">Выберите акцентный цвет:</p>
+                <input type="color" value="#FF8C42" onchange="window.changeColor(this.value)" class="w-full h-12 cursor-pointer bg-transparent rounded-lg">
             </div>
         `
     };
-    app.innerHTML = pages[page] || "<h1>404</h1>";
-}
 
-function changeColor(color) {
+    appContainer.innerHTML = content[page] || "<h1>404</h1>";
+};
+
+window.toggleSettings = function() {
+    document.getElementById('settingsMenu').classList.toggle('hidden');
+};
+
+window.changeColor = function(color) {
     document.documentElement.style.setProperty('--accent-color', color);
     localStorage.setItem('accentColor', color);
-}
+};
 
-function logout() { alert("Выход..."); }
+window.logout = function() {
+    alert("Выход из аккаунта...");
+};
 
-// Делаем функции глобальными для кнопок в HTML
-window.renderPage = renderPage;
-window.toggleSettings = toggleSettings;
-window.changeColor = changeColor;
-window.logout = logout;
+// Применение цвета при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+    const savedColor = localStorage.getItem('accentColor');
+    if (savedColor) document.documentElement.style.setProperty('--accent-color', savedColor);
+});
