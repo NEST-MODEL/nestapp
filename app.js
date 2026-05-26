@@ -26,5 +26,38 @@ function renderPage(page) {
     }
 }
 
+// Переключение меню настроек
+function toggleSettings() {
+    const menu = document.getElementById('settingsMenu');
+    menu.classList.toggle('hidden');
+}
+
+// Рендер контента (упрощенная SPA логика)
+function renderPage(page) {
+    const app = document.getElementById('app');
+    document.getElementById('settingsMenu').classList.add('hidden'); // Закрыть меню настроек
+
+    if (page === 'feed') {
+        app.innerHTML = `<h1 class="text-3xl font-bold">Лента постов</h1><div id="feed-content"></div>`;
+    } else if (page === 'chats') {
+        app.innerHTML = `<h1 class="text-3xl font-bold">Ваши чаты</h1><div class="mt-6">Список чатов...</div>`;
+    } else if (page === 'custom') {
+        app.innerHTML = `
+            <h1 class="text-3xl font-bold">Кастомизация</h1>
+            <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl max-w-md">
+                <label class="block mb-4">Цвет акцента: 
+                    <input type="color" value="#FF8C42" onchange="updateTheme(this.value)" class="ml-4 cursor-pointer">
+                </label>
+            </div>
+        `;
+    }
+}
+
+// Функция кастомизации цвета (меняет CSS переменную)
+function updateTheme(color) {
+    document.documentElement.style.setProperty('--accent-color', color);
+    // Нужно будет добавить в CSS: .bg-accent { background-color: var(--accent-color); }
+}
+
 // Инициализация
 renderPage('home');
