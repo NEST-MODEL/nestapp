@@ -1,63 +1,49 @@
-// Конфиг Firebase (вставь свои данные)
-const firebaseConfig = {
-  apiKey: "AIzaSyAulfZqMeErLD2oPhoc7-gInpYBZV-ekjQ",
-  authDomain: "nest-app-dfae0.firebaseapp.com",
-  projectId: "nest-app-dfae0",
-  storageBucket: "nest-app-dfae0.firebasestorage.app",
-  messagingSenderId: "838781529904",
-  appId: "1:838781529904:web:6676c98550174484d962f5",
-  measurementId: "G-XSLD5FDZGJ"
+// Импорты Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = { /* ТВОИ ДАННЫЕ */ };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Применение темы из localStorage
+window.onload = () => {
+    const savedColor = localStorage.getItem('accentColor');
+    if (savedColor) document.documentElement.style.setProperty('--accent-color', savedColor);
 };
 
-
-
-// Функция отрисовки страниц
-function renderPage(page) {
-    const app = document.getElementById('app');
-    if (page === 'home') {
-        app.innerHTML = `
-            <h1 class="text-3xl font-bold mb-8">Лента</h1>
-            <div id="posts" class="space-y-4 max-w-xl">
-                <div class="bg-card p-5 rounded-xl border border-white/5">
-                    <p>Это статичный пост. Здесь будет Firebase!</p>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Переключение меню настроек
 function toggleSettings() {
-    const menu = document.getElementById('settingsMenu');
-    menu.classList.toggle('hidden');
+    document.getElementById('settingsMenu').classList.toggle('hidden');
 }
 
-// Рендер контента (упрощенная SPA логика)
 function renderPage(page) {
     const app = document.getElementById('app');
-    document.getElementById('settingsMenu').classList.add('hidden'); // Закрыть меню настроек
+    document.getElementById('settingsMenu').classList.add('hidden');
 
-    if (page === 'feed') {
-        app.innerHTML = `<h1 class="text-3xl font-bold">Лента постов</h1><div id="feed-content"></div>`;
-    } else if (page === 'chats') {
-        app.innerHTML = `<h1 class="text-3xl font-bold">Ваши чаты</h1><div class="mt-6">Список чатов...</div>`;
-    } else if (page === 'custom') {
-        app.innerHTML = `
+    const pages = {
+        feed: `<h1 class="text-3xl font-bold">Лента постов</h1>`,
+        chats: `<h1 class="text-3xl font-bold">Чаты</h1>`,
+        profile: `<h1 class="text-3xl font-bold">Профиль пользователя</h1>`,
+        custom: `
             <h1 class="text-3xl font-bold">Кастомизация</h1>
-            <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl max-w-md">
-                <label class="block mb-4">Цвет акцента: 
-                    <input type="color" value="#FF8C42" onchange="updateTheme(this.value)" class="ml-4 cursor-pointer">
-                </label>
+            <div class="mt-8 bg-card p-6 rounded-2xl max-w-sm">
+                <p class="mb-4">Выберите акцентный цвет:</p>
+                <input type="color" onchange="changeColor(this.value)" class="w-full h-12 cursor-pointer bg-transparent">
             </div>
-        `;
-    }
+        `
+    };
+    app.innerHTML = pages[page] || "<h1>404</h1>";
 }
 
-// Функция кастомизации цвета (меняет CSS переменную)
-function updateTheme(color) {
+function changeColor(color) {
     document.documentElement.style.setProperty('--accent-color', color);
-    // Нужно будет добавить в CSS: .bg-accent { background-color: var(--accent-color); }
+    localStorage.setItem('accentColor', color);
 }
 
-// Инициализация
-renderPage('home');
+function logout() { alert("Выход..."); }
+
+// Делаем функции глобальными для кнопок в HTML
+window.renderPage = renderPage;
+window.toggleSettings = toggleSettings;
+window.changeColor = changeColor;
+window.logout = logout;
