@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEST | Social</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { bg: '#111111', card: '#1A1A1A', accent: '#FF8C42' } } }
+        }
+    </script>
+</head>
+<body class="bg-bg text-white flex h-screen overflow-hidden font-sans">
+
+    <aside class="w-[80px] bg-bg border-r border-[#1A1A1A] flex flex-col items-center py-6 gap-6">
+        <div class="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center font-bold text-black">N</div>
+        <button onclick="renderPage('home')" class="w-12 h-12 bg-card rounded-xl hover:bg-accent transition-all">🏠</button>
+    </aside>
+
+    <main id="app" class="flex-1 overflow-y-auto p-8">
+        <h1 class="text-3xl font-bold">Добро пожаловать в NEST</h1>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
