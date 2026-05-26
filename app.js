@@ -2,13 +2,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "ТВОЙ_API_KEY",
-    authDomain: "nest-app-dfae0.firebaseapp.com",
-    projectId: "nest-app-dfae0",
-    storageBucket: "nest-app-dfae0.appspot.com",
-    messagingSenderId: "...",
-    appId: "..."
+  apiKey: "AIzaSyAulfZqMeErLD2oPhoc7-gInpYBZV-ekjQ",
+  authDomain: "nest-app-dfae0.firebaseapp.com",
+  projectId: "nest-app-dfae0",
+  storageBucket: "nest-app-dfae0.firebasestorage.app",
+  messagingSenderId: "838781529904",
+  appId: "1:838781529904:web:6676c98550174484d962f5",
+  measurementId: "G-XSLD5FDZGJ"
 };
+
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
