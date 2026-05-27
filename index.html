@@ -821,6 +821,20 @@ body.compact .chat-msgs{gap:0}
 @media(max-width:700px){
   .sidebar{display:none}
   .mob-nav{display:flex}
+  body:has(.chat-input-box:focus-within) .mob-nav,
+  body:has(.compose-ta:focus) .mob-nav {
+    display: none !important;
+  }
+  .panel {
+    padding-bottom: var(--mob-nav-h);
+  }
+  body:has(.chat-input-box:focus-within) .panel,
+  body:has(.compose-ta:focus) .panel {
+    padding-bottom: 0 !important;
+  }
+  .chat-input-wrap {
+    padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  }
   .side-list{display:none}
   .feed{padding:10px 10px 80px}
   .modal{padding:16px;border-radius:16px}
@@ -2476,6 +2490,17 @@ function applyPrefs(){
   if(LS.get('setting_perf_lite')) toggleLiteMode(true);
 }
 
+  window.insertEmoji = function(targetInputId, emoji) {
+  const el = document.getElementById(targetInputId);
+  if (!el) return;
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  const text = el.value;
+  el.value = text.slice(0, start) + emoji + text.slice(end);
+  el.selectionStart = el.selectionEnd = start + emoji.length;
+  el.focus();
+ };
+  
 // ── BOOT ──
 applyPrefs();
 </script>
