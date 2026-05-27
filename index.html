@@ -691,7 +691,7 @@ body::before{
 .profile-stat{text-align:center}
 .profile-stat-n{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text)}
 .profile-stat-l{font-size:11px;color:var(--text2)}
-.profile-actions{display:flex;gap:8px;padding:12px 16px;margin-top:0;justify-content:flex-end;position:relative;z-index:2;flex-wrap:wrap}
+.profile-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .prof-action-btn{flex:1;min-width:100px;padding:9px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all var(--tr);border:1.5px solid var(--border2);color:var(--text);background:var(--surface)}
 .prof-action-btn:hover{border-color:var(--accent);color:var(--accent)}
 .prof-action-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:var(--glow)}
@@ -1326,8 +1326,13 @@ const LS = {
 
 // ── EMOJIS ──
 const EMOJI_CATS = {
- '😀','😁','😂','🤣','😃','😄','😅','😆','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄','💋','🩸','🎮','👾','🎮','🕹️','🖥️','💻','👑','💎','🔥','⚡','✨','⭐'
- };
+  '😊 Смайлы': ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖'],
+  '👋 Жесты': ['👍','👎','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👋','🤚','🖐','✋','🖖','👏','🙌','🤲','🤝','🙏','✍️','💅','🤳','💪','🦵','🦶','👂','🦻','👃','🫀','🫁','🧠','🦷','🦴','👀','👁','👅','👄','🫦'],
+  '🎮 Гейминг': ['🎮','🕹','👾','🎯','🎲','🃏','🎪','🏆','🥇','🎖','🏅','🎗','🏵','🎀','🎁','🎊','🎉','🎈','🎆','🎇','✨','🌟','⭐','💫','🔥','⚡','💥','🌈','🎭','🎨','🎬','🎤','🎧','🎵','🎶','🎸','🎹','🥁','🎺','🎻','🪕','🎷'],
+  '❤️ Сердца': ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','❤️‍🔥','❤️‍🩹','💔','❣️','💕','💞','💓','💗','💖','💝','💘','💟','☮️','✝️','☯️','🕊','💌','💋','💍','💎','👑'],
+  '🌍 Природа': ['🌍','🌎','🌏','🌙','🌝','🌛','🌜','🌚','🌞','⭐','🌟','💫','✨','☀️','🌤','⛅','🌥','☁️','🌦','🌧','⛈','🌩','🌨','❄️','☃️','⛄','🌬','💨','🌪','🌫','🌊','🌈','☔','⚡','🔥','💧','🌿','🍀','🌱','🌲','🌳','🌴','🌵','🌾','🍁','🍂','🍃','🌺','🌸','🌼','🌻','🌹','🥀'],
+  '🍕 Еда': ['🍕','🍔','🌮','🌯','🍟','🥓','🍗','🍖','🥩','🥚','🍳','🥘','🍲','🥗','🍜','🍝','🍛','🍣','🍱','🍤','🦐','🦞','🦀','🦑','🐙','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','☕','🍵','🧃','🥤','🍺','🍻','🥂','🍷','🥃','🍸'],
+};
 
 function buildEmojiPicker(pickerId, targetId, cats = EMOJI_CATS) {
   const picker = document.getElementById(pickerId);
@@ -1497,48 +1502,6 @@ const WALLPAPERS = [
 
 let prefs = LS.get('prefs') || { theme:'dark', accent:'#00e5ff', font:'dm', fontSize:14, bubbleStyle:'rounded', wallpaper:'none', compact:false, anim:true };
 
-window.friendRequests = window.friendRequests || [];
-window.friendsList = window.friendsList || [];
-
-window.sendFriendRequest = function(userId) {
-   if(window.friendsList.includes(userId)) return alert('Уже в друзьях');
-   if(!window.friendRequests.includes(userId)) {
-      window.friendRequests.push(userId);
-      alert('Заявка в друзья отправлена в лист ожидания!');
-      window.renderFriendRequests();
-   }
-};
-
-window.acceptFriendRequest = function(userId) {
-   window.friendRequests = window.friendRequests.filter(id => id !== userId);
-   if(!window.friendsList.includes(userId)) window.friendsList.push(userId);
-   alert('Заявка принята!');
-   window.renderFriendRequests();
-};
-
-window.rejectFriendRequest = function(userId) {
-   window.friendRequests = window.friendRequests.filter(id => id !== userId);
-   alert('Заявка отклонена');
-   window.renderFriendRequests();
-};
-
-window.renderFriendRequests = function() {
-   const container = document.getElementById('friendRequestsContainer');
-   if(!container) return;
-   container.innerHTML = window.friendRequests.length === 0 ? '<div class="empty-feed">Лист ожидания пуст</div>' : '';
-   window.friendRequests.forEach(id => {
-      const div = document.createElement('div');
-      div.className = 'glass-card comment-item';
-      div.style.padding = '10px';
-      div.innerHTML = `<div><strong>ID: ${id}</strong></div>
-        <div style="margin-left:auto; display:flex; gap:5px;">
-          <button onclick="window.acceptFriendRequest('${id}')" style="color:var(--success)">Принять</button>
-          <button onclick="window.rejectFriendRequest('${id}')" style="color:var(--danger)">Отклонить</button>
-        </div>`;
-      container.appendChild(div);
-   });
-};
-  
 // ── HELPERS ──
 window.autoH = function(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; };
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -2641,8 +2604,9 @@ function applyPrefs(){
   if(prefs.fontSize) document.documentElement.style.fontSize=prefs.fontSize+'px';
   const f=FONTS.find(f=>f.id===prefs.font);
   if(f) document.body.style.fontFamily=f.css;
-  if(prefs.compact) document.body.classList.toggle('compact',true);
-  if(window.LS) window.LS.set('prefs', prefs);
+  if(prefs.compact) document.body.classList.add('compact');
+  if(prefs.anim===false) applyAnim(false);
+  if(prefs.wallpaper && prefs.wallpaper!=='none') setTimeout(()=>applyWallpaper(prefs.wallpaper),200);
 }
 
 applyPrefs();
