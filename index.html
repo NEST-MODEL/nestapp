@@ -955,26 +955,24 @@ body.compact .chat-msgs{gap:0}
     </div>
 
     <!-- CHATS -->
-    <div id="view-chats" style="display:none;height:100%;flex-direction:column">
-      <div class="topbar" id="chats-topbar">
-        <div class="topbar-title">Сообщения</div>
-      </div>
-      <div class="split" style="flex:1;min-height:0">
-        <div class="side-list" id="chats-panel">
-          <div class="chats-search">
-            <div class="search-box">
-              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input type="text" placeholder="Поиск..." oninput="filterChats(this.value)" id="chat-search">
-            </div>
-          </div>
-          <div class="new-chat-btn" onclick="openModal('modal-newchat')">+ Новый чат</div>
-          <div class="chats-list" id="chats-list-inner" style="flex:1;overflow-y:auto"></div>
+    <div id="view-chats" class="view-panel">
+      <div class="panel-header" style="flex-direction: column; align-items: stretch; gap: 10px; height: auto; padding: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Чаты</h2>
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;min-width:0;min-height:0" id="chat-window">
-          <div class="no-chat" id="no-chat">
-            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            <p>Выберите чат или начните новый</p>
-          </div>
+        
+        <div class="search-bar" style="margin: 0;">
+          <input type="text" id="friendSearchInput" placeholder="Поиск друзей по нику..." oninput="window.filterFriendsByNick(this.value)">
+        </div>
+
+        <div class="friends-top-panel" style="display: flex; flex-direction: column; gap: 8px; background: var(--surface2); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">Лист ожидания и Друзья</div>
+          <div id="friendRequestsContainer" style="display: flex; flex-direction: column; gap: 5px;"></div>
+          <div id="topFriendsList" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;"></div>
+        </div>
+      </div>
+      <div class="chats-list" id="chatsList"></div>
+    </div>
           <div style="display:none;flex:1;flex-direction:column;min-height:0" id="chat-view-area">
             <div class="topbar" id="chat-topbar">
               <div class="back-btn" id="mob-back-chat" onclick="closeChatMobile()">
@@ -1038,24 +1036,11 @@ body.compact .chat-msgs{gap:0}
   </div>
 
   <!-- Mobile nav -->
-  <div class="mob-nav" id="mob-nav">
-    <div class="mob-nav-btn active" id="mob-btn-feed" onclick="showView('feed')">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <div class="mob-nav-label">Лента</div>
-    </div>
-    <div class="mob-nav-btn" id="mob-btn-chats" onclick="showView('chats')">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <div class="mob-nav-label">Чаты</div>
-      <div class="mob-nav-dot" id="mob-chat-dot"></div>
-    </div>
-    <div class="mob-nav-btn" id="mob-btn-friends" onclick="showView('friends')">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      <div class="mob-nav-label">Друзья</div>
-    </div>
-    <div class="mob-nav-btn" id="mob-btn-profile" onclick="openModal('modal-profile')">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <div class="mob-nav-label">Профиль</div>
-    </div>
+  <div class="mob-nav">
+  <div class="mob-nav-item" id="mob-nav-feed" onclick="switchView('feed')">📱<span>Лента</span></div>
+  <div class="mob-nav-item active" id="mob-nav-chats" onclick="switchView('chats')">💬<span>Чаты</span></div>
+  <div class="mob-nav-item" id="mob-nav-settings" onclick="switchView('settings')">⚙️<span>Настройки</span></div>
+</div>
     <div class="mob-nav-btn" id="mob-btn-custom" onclick="openModal('modal-custom')">
       <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
       <div class="mob-nav-label">Вид</div>
@@ -1296,9 +1281,9 @@ const db    = getDatabase(fbApp);
 
 // ── STATE ──
 let me = null;
-let currentView = 'feed';
+let currentView = 'chats';
 let currentChatId = null;
-let prevView = 'feed';
+let prevView = 'chats';
 let settingsOpen = false;
 let callActive = false;
 let callTimer = null;
@@ -1500,8 +1485,94 @@ const WALLPAPERS = [
   { id:'rain',    bg:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(255,255,255,.015) 4px,rgba(255,255,255,.015) 5px)', label:'Дождь' },
 ];
 
-let prefs = LS.get('prefs') || { theme:'dark', accent:'#00e5ff', font:'dm', fontSize:14, bubbleStyle:'rounded', wallpaper:'none', compact:false, anim:true };
+let prefs = LS.get('prefs') || { theme:'dark', accent:'#00e5ff', fontSize:14, font:'dm', compact:false, anim:true };
 
+
+  window.friendRequests = window.friendRequests || ['2', '3']; // Тестовые заявки для проверки интерфейса
+window.friendsList = window.friendsList || ['1'];
+
+window.filterFriendsByNick = function(val) {
+  const query = val.toLowerCase().trim();
+  const topFriends = document.getElementById('topFriendsList');
+  if(!topFriends) return;
+  
+  if(!query) { window.renderTopFriends(); return; }
+  
+  topFriends.innerHTML = '';
+  Object.keys(USERS).forEach(id => {
+    const u = USERS[id];
+    if(u.nick.toLowerCase().includes(query) || u.name.toLowerCase().includes(query)) {
+      const el = document.createElement('div');
+      el.style = 'display:flex; flex-direction:column; align-items:center; cursor:pointer; font-size:12px; min-width:60px;';
+      el.onclick = () => openChat(id);
+      el.innerHTML = `<div class="sb-av" style="margin:0; width:40px; height:40px; font-size:16px;">${u.av||'👤'}</div><span>${u.name}</span>`;
+      topFriends.appendChild(el);
+    }
+  });
+};
+
+window.acceptFriendRequest = function(userId) {
+  window.friendRequests = window.friendRequests.filter(id => id !== userId);
+  if(!window.friendsList.includes(userId)) window.friendsList.push(userId);
+  window.renderFriendRequests();
+  window.renderTopFriends();
+};
+
+window.rejectFriendRequest = function(userId) {
+  window.friendRequests = window.friendRequests.filter(id => id !== userId);
+  window.renderFriendRequests();
+};
+
+window.renderFriendRequests = function() {
+  const container = document.getElementById('friendRequestsContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  if(window.friendRequests.length === 0) {
+    container.innerHTML = '<div style="font-size:12px; color:rgba(255,255,255,0.4);">Новых заявок нет</div>';
+    return;
+  }
+  window.friendRequests.forEach(id => {
+    const u = USERS[id] || {name: 'Игрок ' + id, nick: '@user'};
+    const div = document.createElement('div');
+    div.style = 'display:flex; align-items:center; justify-content:between; background:var(--surface); padding:6px 10px; border-radius:6px; font-size:13px; margin-bottom:2px;';
+    div.innerHTML = `<div><strong>${u.name}</strong> ${u.nick}</div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <span onclick="window.acceptFriendRequest('${id}')" style="color:var(--accent); cursor:pointer; font-weight:bold;">Принять</span>
+        <span onclick="window.rejectFriendRequest('${id}')" style="color:rgba(255,255,255,0.4); cursor:pointer;">Игнор</span>
+      </div>`;
+    container.appendChild(div);
+  });
+};
+
+window.renderTopFriends = function() {
+  const topFriends = document.getElementById('topFriendsList');
+  if(!topFriends) return;
+  topFriends.innerHTML = '';
+  if(window.friendsList.length === 0) {
+    topFriends.innerHTML = '<div style="font-size:12px; color:rgba(255,255,255,0.3);">Список друзей пуст</div>';
+    return;
+  }
+  window.friendsList.forEach(id => {
+    const u = USERS[id];
+    if(!u) return;
+    const el = document.createElement('div');
+    el.style = 'display:flex; flex-direction:column; align-items:center; cursor:pointer; font-size:11px; min-width:55px; gap:4px;';
+    el.onclick = () => openChat(id);
+    el.innerHTML = `<div class="sb-av" style="margin:0; width:36px; height:36px; font-size:14px; background:var(--accent-dim); border:1px solid var(--accent);">${u.av||'👤'}</div>
+      <span style="max-width:60px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${u.name}</span>`;
+    topFriends.appendChild(el);
+  });
+};
+
+// Запускаем рендер при инициализации представлений
+const originalSwitchView = window.switchView;
+window.switchView = function(viewId) {
+  if(typeof originalSwitchView === 'function') originalSwitchView(viewId);
+  if(viewId === 'chats') {
+    window.renderFriendRequests();
+    window.renderTopFriends();
+  }
+};
 // ── HELPERS ──
 window.autoH = function(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; };
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
