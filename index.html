@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#3b82c4">
 <title>Global Coffee — касса и склад</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -26,11 +27,35 @@
     --danger-bg:#fdecee;
     --success:#33ab7a;
     --success-bg:#e7f7ef;
+    --warn:#b6821b;
+    --warn-bg:#fff4de;
     --radius-lg:26px;
     --radius-md:18px;
     --radius-sm:12px;
     --shadow-sm: 0 2px 10px rgba(59,130,196,0.08);
     --shadow-md: 0 12px 32px rgba(59,130,196,0.14);
+  }
+  html[data-theme="dark"]{
+    --white:#141d27;
+    --bg:#0b1119;
+    --blue-50:#1a2531;
+    --blue-100:#20303f;
+    --blue-200:#2a3d51;
+    --blue-400:#4f9be0;
+    --blue-500:#3b82c4;
+    --blue-600:#6cb2ef;
+    --cyan-400:#5cc9c2;
+    --ink:#e8f1fa;
+    --muted:#8298ac;
+    --line:#233042;
+    --danger:#ff6b78;
+    --danger-bg:#3a1f24;
+    --success:#4ecb98;
+    --success-bg:#173328;
+    --warn:#e0b04a;
+    --warn-bg:#3a2f16;
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.35);
+    --shadow-md: 0 12px 32px rgba(0,0,0,0.55);
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
@@ -40,11 +65,12 @@
     font-family:'Inter',sans-serif;
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
+    transition:background .2s ease, color .2s ease;
   }
   h1,h2,h3,.brand,.num{font-family:'Manrope',sans-serif;}
   .mono{font-family:'IBM Plex Mono',monospace;}
   button{font-family:inherit;cursor:pointer;border:none;}
-  input,select{font-family:inherit;}
+  input,select{font-family:inherit;color:var(--ink);}
   ::selection{background:var(--blue-200);}
   #app{min-height:100vh;}
 
@@ -69,14 +95,16 @@
   .role-label{font-weight:700;font-size:14px;}
   .kassa-select{margin-top:22px;text-align:left;}
   .kassa-select label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .name-input{width:100%;margin-top:8px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:var(--white);color:var(--ink);}
+  .name-input:focus{outline:2px solid var(--blue-400);border-color:transparent;}
   .kassa-empty{margin-top:10px;padding:16px;background:var(--blue-50);border-radius:var(--radius-sm);color:var(--muted);font-size:13px;text-align:center;}
   .kassa-option{display:flex;justify-content:space-between;align-items:center;background:var(--blue-50);border:2px solid transparent;border-radius:var(--radius-sm);padding:12px 16px;margin-top:8px;transition:.15s;}
   .kassa-option:hover{border-color:var(--blue-400);}
   .kassa-option.active{border-color:var(--blue-500);background:var(--white);}
   .kassa-option .k-num{font-weight:800;color:var(--blue-600);}
   .kassa-option .k-addr{font-size:12px;color:var(--muted);}
-  .enter-btn{width:100%;margin-top:26px;padding:15px;border-radius:var(--radius-sm);background:var(--ink);color:#fff;font-weight:700;font-size:15px;transition:.15s;opacity:.4;pointer-events:none;}
-  .enter-btn.ready{opacity:1;pointer-events:all;background:var(--blue-500);box-shadow:0 10px 22px rgba(59,130,196,0.35);}
+  .enter-btn{width:100%;margin-top:26px;padding:15px;border-radius:var(--radius-sm);background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;transition:.15s;opacity:.4;pointer-events:none;}
+  .enter-btn.ready{opacity:1;pointer-events:all;background:var(--blue-500);color:#fff;box-shadow:0 10px 22px rgba(59,130,196,0.35);}
   .enter-btn.ready:hover{transform:translateY(-1px);background:var(--blue-600);}
 
   .shell{display:flex;min-height:100vh;}
@@ -92,8 +120,9 @@
   .who{font-size:12px;color:var(--muted);padding:0 6px 10px;}
   .logout-btn{width:100%;padding:10px;border-radius:var(--radius-sm);background:var(--danger-bg);color:var(--danger);font-weight:700;font-size:13px;}
   .logout-btn:hover{background:#fbdadd;}
+  html[data-theme="dark"] .logout-btn:hover{background:#4a262c;}
 
-  .main{flex:1;padding:30px 36px;max-width:1400px;}
+  .main{flex:1;padding:30px 36px 60px;max-width:1400px;}
   .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
   .page-head h1{font-size:24px;margin:0 0 4px;letter-spacing:-0.01em;}
   .page-head .sub{color:var(--muted);font-size:13px;margin:0;}
@@ -114,19 +143,24 @@
   .kassa-card .kc-addr{font-weight:700;font-size:15px;margin-bottom:14px;color:var(--ink);}
   .kassa-card .kc-total-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
   .kassa-card .kc-total{font-size:22px;font-weight:800;color:var(--blue-600);margin-top:2px;}
+  .kassa-card .kc-split{font-size:11px;color:var(--muted);margin-top:8px;}
 
   .section-title{font-size:16px;font-weight:800;margin:0 0 14px;}
 
+  .search-input{width:100%;max-width:320px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:var(--white);color:var(--ink);}
+  .search-input:focus{outline:2px solid var(--blue-400);border-color:transparent;}
+  .search-input::placeholder{color:var(--muted);}
+
   .wh-table{width:100%;border-collapse:collapse;}
-  .wh-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line);}
+  .wh-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;}
   .wh-table td{padding:10px 14px;border-bottom:1px solid var(--blue-50);font-size:14px;vertical-align:middle;}
   .wh-table tr:last-child td{border-bottom:none;}
   .cat-pill{background:var(--blue-50);color:var(--blue-600);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
-  .stock-pill{font-weight:700;padding:3px 10px;border-radius:100px;font-size:12px;}
+  .stock-pill{font-weight:700;padding:3px 10px;border-radius:100px;font-size:12px;white-space:nowrap;}
   .stock-ok{background:var(--success-bg);color:var(--success);}
-  .stock-low{background:#fff4de;color:#b6821b;}
+  .stock-low{background:var(--warn-bg);color:var(--warn);}
   .stock-out{background:var(--danger-bg);color:var(--danger);}
-  .mini-input{width:70px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center;}
+  .mini-input{width:70px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center;background:var(--white);color:var(--ink);}
   .mini-input:focus{outline:2px solid var(--blue-400);border-color:transparent;}
   .icon-btn{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--blue-50);color:var(--blue-600);font-size:14px;margin-right:4px;}
   .icon-btn:hover{background:var(--blue-100);}
@@ -136,7 +170,7 @@
   .icon-btn[disabled]{opacity:.4;pointer-events:none;}
 
   .add-row-form{display:flex;flex-wrap:wrap;gap:10px;padding:16px;background:var(--blue-50);border-radius:var(--radius-md);margin-top:18px;}
-  .add-row-form input,.add-row-form select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:#fff;}
+  .add-row-form input,.add-row-form select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--white);color:var(--ink);}
   .primary-btn{background:var(--blue-500);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:10px;box-shadow:0 8px 18px rgba(59,130,196,.28);}
   .primary-btn:hover{background:var(--blue-600);}
   .primary-btn[disabled]{opacity:.5;pointer-events:none;}
@@ -144,7 +178,7 @@
   .ghost-btn:hover{background:var(--blue-50);}
 
   .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
-  .filter-bar select{padding:9px 14px;border-radius:10px;border:1px solid var(--line);font-size:13px;background:#fff;}
+  .filter-bar select{padding:9px 14px;border-radius:10px;border:1px solid var(--line);font-size:13px;background:var(--white);color:var(--ink);}
   .receipt-row{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--blue-50);cursor:pointer;transition:.15s;}
   .receipt-row:last-child{border-bottom:none;}
   .receipt-row:hover{background:var(--blue-50);}
@@ -152,16 +186,16 @@
   .rr-icon{width:38px;height:38px;border-radius:12px;background:var(--blue-50);color:var(--blue-600);display:flex;align-items:center;justify-content:center;font-size:16px;}
   .rr-id{font-weight:700;font-size:14px;}
   .rr-meta{font-size:12px;color:var(--muted);margin-top:2px;}
-  .rr-total{font-weight:800;font-size:15px;color:var(--blue-600);}
+  .rr-total{font-weight:800;font-size:15px;color:var(--blue-600);text-align:right;}
   .empty-state{padding:60px 20px;text-align:center;color:var(--muted);}
   .empty-state .e-icon{font-size:34px;margin-bottom:10px;}
 
   .pos-shell{display:flex;gap:22px;align-items:flex-start;}
   .pos-main{flex:1;min-width:0;}
   .cat-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-  .cat-tab{padding:9px 18px;border-radius:100px;background:var(--white);border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--muted);transition:.15s;}
+  .cat-tab{padding:9px 18px;border-radius:100px;background:var(--white);border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--muted);transition:.15s;white-space:nowrap;}
   .cat-tab:hover{border-color:var(--blue-400);color:var(--ink);}
-  .cat-tab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .cat-tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
   .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;}
   .product-card{background:var(--white);border-radius:var(--radius-md);padding:16px;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;transition:.15s;position:relative;}
   .product-card:not(.out):hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--blue-200);}
@@ -190,16 +224,26 @@
   .cart-total-row{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px dashed var(--line);}
   .cart-total-label{font-size:13px;color:var(--muted);font-weight:600;}
   .cart-total-num{font-size:24px;font-weight:800;color:var(--blue-600);}
-  .pay-btn{width:100%;margin-top:16px;padding:15px;border-radius:var(--radius-sm);font-weight:800;font-size:15px;color:#fff;background:var(--blue-500);box-shadow:0 12px 26px rgba(59,130,196,.35);opacity:.4;pointer-events:none;}
+  .pm-grid{display:flex;gap:8px;margin-top:14px;}
+  .pm-btn{flex:1;padding:12px 6px;border-radius:12px;border:2px solid var(--line);background:var(--blue-50);font-weight:700;font-size:13px;color:var(--muted);transition:.15s;}
+  .pm-btn.active{border-color:var(--blue-500);color:var(--blue-600);background:var(--white);}
+  .pay-btn{width:100%;margin-top:14px;padding:15px;border-radius:var(--radius-sm);font-weight:800;font-size:15px;color:#fff;background:var(--blue-500);box-shadow:0 12px 26px rgba(59,130,196,.35);opacity:.4;pointer-events:none;}
   .pay-btn.ready{opacity:1;pointer-events:all;}
   .pay-btn.ready:hover{background:var(--blue-600);}
   .pay-btn.loading{opacity:.7;pointer-events:none;}
   .clear-cart-btn{width:100%;margin-top:8px;padding:9px;border-radius:10px;background:transparent;color:var(--muted);font-size:12px;font-weight:600;}
   .clear-cart-btn:hover{color:var(--danger);}
 
-  .modal-overlay{position:fixed;inset:0;background:rgba(28,43,58,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;animation:fadeIn .18s ease;}
+  .shift-steps{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+  .shift-step{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--blue-50);border-radius:var(--radius-sm);}
+  .shift-step.done{background:var(--success-bg);}
+  .shift-step .ss-label{font-weight:700;font-size:13px;}
+  .shift-step .ss-time{font-size:12px;color:var(--muted);font-weight:700;}
+  .shift-step.done .ss-time{color:var(--success);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,15,22,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;animation:fadeIn .18s ease;}
   @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-  .receipt-modal{background:var(--white);border-radius:var(--radius-lg);width:100%;max-width:360px;padding:0;overflow:hidden;box-shadow:0 24px 60px rgba(20,40,60,.35);animation:popIn .22s cubic-bezier(.2,.9,.3,1.2);}
+  .receipt-modal{background:var(--white);border-radius:var(--radius-lg);width:100%;max-width:360px;padding:0;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:popIn .22s cubic-bezier(.2,.9,.3,1.2);}
   @keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
   .receipt-top{background:var(--blue-500);color:#fff;padding:26px 26px 20px;text-align:center;}
   .receipt-top .r-check{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 10px;}
@@ -216,21 +260,53 @@
   .r-total-row .rt-label{font-weight:700;font-size:14px;}
   .r-total-row .rt-num{font-weight:800;font-size:20px;color:var(--blue-600);}
   .receipt-foot{padding:0 26px 26px;}
-  .receipt-close-btn{width:100%;padding:13px;border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;}
-  .receipt-close-btn:hover{background:#0f1c28;}
+  .receipt-close-btn{width:100%;padding:13px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;}
+  .receipt-close-btn:hover{opacity:.85;}
 
-  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:100px;font-size:13px;font-weight:600;box-shadow:0 12px 26px rgba(0,0,0,.25);z-index:200;animation:fadeIn .2s ease;max-width:80vw;text-align:center;}
-  .toast.error{background:var(--danger);}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:100px;font-size:13px;font-weight:600;box-shadow:0 12px 26px rgba(0,0,0,.25);z-index:200;animation:fadeIn .2s ease;max-width:80vw;text-align:center;}
+  .toast.error{background:var(--danger);color:#fff;}
+
+  .theme-toggle{position:fixed;top:16px;right:16px;z-index:60;width:40px;height:40px;border-radius:12px;background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:16px;display:flex;align-items:center;justify-content:center;}
+  .theme-toggle:hover{background:var(--blue-50);}
+  .notif-bell{position:fixed;top:16px;right:64px;z-index:60;width:40px;height:40px;border-radius:12px;background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:16px;display:flex;align-items:center;justify-content:center;}
+  .notif-bell:hover{background:var(--blue-50);}
+  .notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;border-radius:100px;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+  .notif-panel{position:fixed;top:64px;right:16px;width:320px;max-width:calc(100vw - 24px);max-height:60vh;overflow-y:auto;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow-md);z-index:70;padding:6px;}
+  .notif-panel-title{font-weight:800;font-size:14px;padding:10px 12px;}
+  .notif-item{padding:12px;border-bottom:1px solid var(--blue-50);font-size:13px;display:flex;gap:10px;align-items:flex-start;line-height:1.4;}
+  .notif-item:last-child{border-bottom:none;}
+  .notif-empty{padding:30px 14px;text-align:center;color:var(--muted);font-size:13px;}
+
+  @media (max-width:1024px){
+    .main{padding:22px 22px 60px;}
+    .cart-panel{width:300px;}
+  }
 
   @media (max-width:900px){
     .shell{flex-direction:column;}
     .sidebar{width:100%;flex-direction:row;align-items:center;padding:14px 18px;overflow-x:auto;}
-    .sb-brand{margin-bottom:0;margin-right:14px;}
+    .sb-brand{margin-bottom:0;margin-right:14px;flex-shrink:0;}
     .sb-foot{display:none;}
     .nav-item{white-space:nowrap;}
-    .main{padding:20px;}
+    .main{padding:20px 20px 90px;}
     .pos-shell{flex-direction:column;}
     .cart-panel{width:100%;position:static;max-height:none;}
+  }
+
+  @media (max-width:640px){
+    .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;z-index:50;border-top:1px solid var(--line);border-right:none;justify-content:space-around;padding:6px 4px;}
+    .sb-brand{display:none;}
+    .nav-item{flex-direction:column;gap:2px;font-size:10px;padding:8px 4px;flex:1;text-align:center;margin-bottom:0;}
+    .nav-icon{font-size:18px;}
+    .main{padding-bottom:96px;}
+    .theme-toggle{top:10px;right:10px;width:36px;height:36px;font-size:14px;}
+    .notif-bell{top:10px;right:52px;width:36px;height:36px;font-size:14px;}
+    .notif-panel{top:56px;right:8px;width:calc(100vw - 16px);}
+    .login-card{padding:32px 22px;}
+    .role-grid{grid-template-columns:1fr;}
+    .page-head{align-items:flex-start;}
+    .stat-value{font-size:24px;}
+    .wh-table th, .wh-table td{padding:8px 10px;font-size:13px;}
   }
 </style>
 </head>
@@ -254,15 +330,21 @@ const productsCol = firestore.collection('products');
 const kassasCol = firestore.collection('kassas');
 const receiptsCol = firestore.collection('receipts');
 const metaCol = firestore.collection('meta');
+const shiftsCol = firestore.collection('shifts');
+const eventsCol = firestore.collection('events');
 
-let CACHE = { products: [], kassas: [], receipts: [] };
-let LOADED = { products: false, kassas: false, receipts: false };
+let CACHE = { products: [], kassas: [], receipts: [], shifts: [], events: [] };
+let LOADED = { products: false, kassas: false, receipts: false, shifts: false, events: false };
 let BOOT_ERROR = null;
 
 let STATE = {
   view: 'login', role: null, loginRoleChoice: null, kassaId: null,
   adminTab: 'overview', adminReceiptFilter: 'all', baristaCategory: 'Все',
   cart: [], modalReceipt: null, toast: null, toastIsError: false, paying: false,
+  theme: localStorage.getItem('gc-theme') || 'light',
+  baristaTab: 'pos', currentShiftId: null, paymentMethod: null,
+  warehouseSearch: '', baristaSearch: '', receiptSearch: '', reportKassaFilter: 'all',
+  notifOpen: false, _focus: null,
 };
 
 function money(n){ return (n||0).toLocaleString('ru-RU') + ' ₸'; }
@@ -270,6 +352,19 @@ function money(n){ return (n||0).toLocaleString('ru-RU') + ' ₸'; }
 function showToast(msg, isError){
   STATE.toast = msg; STATE.toastIsError = !!isError; render();
   setTimeout(()=>{ STATE.toast = null; render(); }, 2600);
+}
+
+function liveInput(el, key){
+  STATE[key] = el.value;
+  STATE._focus = { id: el.id, pos: el.selectionStart };
+  render();
+}
+
+function toggleTheme(){
+  STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('gc-theme', STATE.theme);
+  document.documentElement.setAttribute('data-theme', STATE.theme);
+  render();
 }
 
 const SEED_PRODUCTS = [
@@ -295,8 +390,8 @@ const SEED_PRODUCTS = [
 
 // Кассы стартуют "с открытия" — сумма 0, без примерных цифр.
 const SEED_KASSAS = [
-  {id:'32', address:'Кунаева 67', total:0},
-  {id:'2', address:'Адырбекова 7', total:0},
+  {id:'32', address:'Кунаева 67', total:0, totalCash:0, totalCard:0},
+  {id:'2', address:'Адырбекова 7', total:0, totalCash:0, totalCard:0},
 ];
 
 async function seedIfEmpty(){
@@ -304,7 +399,7 @@ async function seedIfEmpty(){
   const batch = firestore.batch();
   let needsCommit = false;
   if(prodSnap.empty){ SEED_PRODUCTS.forEach(p => { batch.set(productsCol.doc(), p); needsCommit = true; }); }
-  if(kassaSnap.empty){ SEED_KASSAS.forEach(k => { batch.set(kassasCol.doc(k.id), {address:k.address, total:k.total}); needsCommit = true; }); }
+  if(kassaSnap.empty){ SEED_KASSAS.forEach(k => { batch.set(kassasCol.doc(k.id), {address:k.address, total:k.total, totalCash:k.totalCash, totalCard:k.totalCard}); needsCommit = true; }); }
   if(needsCommit) await batch.commit();
 }
 
@@ -323,9 +418,20 @@ function attachListeners(){
     CACHE.receipts = snap.docs.map(d => ({id:d.id, ...d.data()}));
     LOADED.receipts = true; render();
   }, err => { BOOT_ERROR = err.message; render(); });
+
+  shiftsCol.orderBy('checkInAt', 'desc').limit(200).onSnapshot(snap => {
+    CACHE.shifts = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    LOADED.shifts = true; render();
+  }, err => { BOOT_ERROR = err.message; render(); });
+
+  eventsCol.orderBy('createdAt', 'desc').limit(100).onSnapshot(snap => {
+    CACHE.events = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    LOADED.events = true; render();
+  }, err => { BOOT_ERROR = err.message; render(); });
 }
 
 async function bootstrap(){
+  document.documentElement.setAttribute('data-theme', STATE.theme);
   try{ await seedIfEmpty(); attachListeners(); }
   catch(err){ BOOT_ERROR = err.message; render(); }
 }
@@ -344,15 +450,63 @@ function render(){
 
   let html = '';
   if(STATE.view === 'login') html = renderLogin();
+  else if(STATE.view === 'shift-start') html = renderShiftStart();
   else if(STATE.view === 'admin') html = renderAdmin();
   else if(STATE.view === 'barista') html = renderBarista();
+
+  html += renderNotifBell();
+  html += `<button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">${STATE.theme==='dark'?'☀️':'🌙'}</button>`;
 
   if(STATE.modalReceipt) html += renderReceiptModal(STATE.modalReceipt);
   if(STATE.toast) html += `<div class="toast ${STATE.toastIsError?'error':''}">${STATE.toast}</div>`;
 
   app.innerHTML = html;
+
+  if(STATE._focus){
+    const el = document.getElementById(STATE._focus.id);
+    if(el){ el.focus(); const p = STATE._focus.pos; try{ el.setSelectionRange(p,p); }catch(e){} }
+  }
 }
 
+/* ---------------- Уведомления ---------------- */
+function computeNotifications(){
+  const list = [];
+  const todayStr = new Date().toLocaleDateString('ru-RU');
+  CACHE.products.forEach(p=>{
+    if(p.stock === 0) list.push({icon:'⚠️', text:`Нет в наличии: ${p.name}`, sortKey:2});
+    else if(p.stock <= 5) list.push({icon:'⚠️', text:`Заканчивается: ${p.name} (осталось ${p.stock} ${p.unit})`, sortKey:1});
+  });
+  CACHE.events.filter(e=>e.date===todayStr && e.type==='sold_out').forEach(e=>{
+    list.push({icon:'🔴', text:`Продан последний товар: ${e.productName} (касса №${e.kassaId})`, sortKey:0});
+  });
+  const shiftsToday = CACHE.shifts.filter(s=>s.date===todayStr);
+  const closedKassaIds = new Set(shiftsToday.filter(s=>s.status==='closed').map(s=>s.kassaId));
+  const seenKassaIds = new Set();
+  shiftsToday.forEach(s=>{
+    if(seenKassaIds.has(s.kassaId)) return;
+    if(!closedKassaIds.has(s.kassaId)){
+      seenKassaIds.add(s.kassaId);
+      list.push({icon:'⏰', text:`Сегодня не закрыта смена — касса №${s.kassaId}`, sortKey:0});
+    }
+  });
+  return list.sort((a,b)=>a.sortKey-b.sortKey);
+}
+
+function renderNotifBell(){
+  if(!STATE.role) return '';
+  const list = computeNotifications();
+  return `
+    <button class="notif-bell" onclick="toggleNotif()" title="Уведомления">🔔${list.length>0?`<span class="notif-badge">${list.length}</span>`:''}</button>
+    ${STATE.notifOpen ? `
+    <div class="notif-panel">
+      <div class="notif-panel-title">Центр уведомлений</div>
+      ${list.length===0 ? `<div class="notif-empty">Уведомлений нет 🎉</div>` :
+        list.map(n=>`<div class="notif-item"><span>${n.icon}</span><span>${n.text}</span></div>`).join('')}
+    </div>` : ''}`;
+}
+function toggleNotif(){ STATE.notifOpen = !STATE.notifOpen; render(); }
+
+/* ---------------- Логин ---------------- */
 function renderLogin(){
   const roleChosen = STATE.loginRoleChoice;
   const kassaChosen = STATE.kassaId;
@@ -369,6 +523,10 @@ function renderLogin(){
       </div>
       ${roleChosen==='barista' ? `
         <div class="kassa-select">
+          <label>Ваше имя</label>
+          <input id="barista-name-input" class="name-input" type="text" placeholder="Например, Айгерим">
+        </div>
+        <div class="kassa-select" style="margin-top:18px;">
           <label>Выберите кассу</label>
           ${CACHE.kassas.length === 0 ? `<div class="kassa-empty">Кассы ещё не добавлены. Обратитесь к администратору.</div>` :
             CACHE.kassas.map(k => `
@@ -384,12 +542,113 @@ function renderLogin(){
 
 function chooseRole(role){ STATE.loginRoleChoice = role; STATE.kassaId = null; render(); }
 function chooseKassa(id){ STATE.kassaId = id; render(); }
-function enterApp(){
-  if(STATE.loginRoleChoice === 'admin'){ STATE.role = 'admin'; STATE.view = 'admin'; render(); }
-  else if(STATE.loginRoleChoice === 'barista' && STATE.kassaId){ STATE.role = 'barista'; STATE.view = 'barista'; STATE.cart = []; render(); }
-}
-function logout(){ STATE = { ...STATE, view:'login', role:null, loginRoleChoice:null, kassaId:null, cart:[], modalReceipt:null }; render(); }
 
+async function enterApp(){
+  if(STATE.loginRoleChoice === 'admin'){
+    STATE.role = 'admin'; STATE.view = 'admin'; render(); return;
+  }
+  if(STATE.loginRoleChoice === 'barista'){
+    if(!STATE.kassaId){ showToast('Выберите кассу', true); return; }
+    const nameEl = document.getElementById('barista-name-input');
+    const name = nameEl ? nameEl.value.trim() : '';
+    if(!name){ showToast('Введите имя бариста', true); if(nameEl) nameEl.focus(); return; }
+    const kassa = CACHE.kassas.find(k=>k.id===STATE.kassaId);
+    const now = new Date();
+    try{
+      const ref = await shiftsCol.add({
+        kassaId: STATE.kassaId, kassaAddress: kassa.address, baristaName: name,
+        checkInAt: firebase.firestore.FieldValue.serverTimestamp(),
+        checkInTime: now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}),
+        date: now.toLocaleDateString('ru-RU'),
+        openAt: null, openTime: null, closeAt: null, closeTime: null, checkOutAt: null, checkOutTime: null,
+        status: 'checkin'
+      });
+      STATE.role = 'barista'; STATE.currentShiftId = ref.id; STATE.cart = []; STATE.view = 'shift-start';
+      render();
+    }catch(err){ showToast('Ошибка начала смены: ' + err.message, true); }
+  }
+}
+
+function logout(){
+  STATE = { ...STATE, view:'login', role:null, loginRoleChoice:null, kassaId:null, cart:[], modalReceipt:null,
+    currentShiftId:null, baristaTab:'pos', paymentMethod:null, baristaSearch:'', notifOpen:false };
+  render();
+}
+
+/* ---------------- Смена ---------------- */
+function renderShiftStart(){
+  const shift = CACHE.shifts.find(s=>s.id===STATE.currentShiftId);
+  if(!shift) return `<div class="boot-screen"><div class="boot-mark">☕</div><div class="boot-text">Начинаем смену…</div></div>`;
+  return `
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="brand-mark">🕒</div>
+      <h1 class="brand">Смена начата</h1>
+      <p class="login-sub">${shift.baristaName} · Касса №${shift.kassaId} · ${shift.kassaAddress}</p>
+      <div class="shift-steps">
+        <div class="shift-step done"><span class="ss-label">Пришёл</span><span class="ss-time">${shift.checkInTime}</span></div>
+      </div>
+      <button class="enter-btn ready" onclick="openPoint()">Открыть точку</button>
+    </div>
+  </div>`;
+}
+
+async function openPoint(){
+  const now = new Date();
+  try{
+    await shiftsCol.doc(STATE.currentShiftId).update({
+      openAt: firebase.firestore.FieldValue.serverTimestamp(),
+      openTime: now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}),
+      status: 'opened'
+    });
+    STATE.view = 'barista'; STATE.baristaTab = 'pos'; render();
+  }catch(err){ showToast('Ошибка: ' + err.message, true); }
+}
+
+async function closePoint(){
+  const now = new Date();
+  try{
+    await shiftsCol.doc(STATE.currentShiftId).update({
+      closeAt: firebase.firestore.FieldValue.serverTimestamp(),
+      closeTime: now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'})
+    });
+    showToast('Точка закрыта'); render();
+  }catch(err){ showToast('Ошибка: ' + err.message, true); }
+}
+
+async function checkOutAndLeave(){
+  const now = new Date();
+  try{
+    await shiftsCol.doc(STATE.currentShiftId).update({
+      checkOutAt: firebase.firestore.FieldValue.serverTimestamp(),
+      checkOutTime: now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}),
+      status: 'closed'
+    });
+    showToast('Смена завершена, до встречи!');
+    logout();
+  }catch(err){ showToast('Ошибка: ' + err.message, true); }
+}
+
+function setBaristaTab(tab){ STATE.baristaTab = tab; render(); }
+
+function renderShiftTab(shift){
+  if(!shift) return `<div class="card"><div class="empty-state"><div class="e-icon">🕒</div>Смена не найдена</div></div>`;
+  return `
+    <div class="card" style="padding:24px;max-width:480px;">
+      <div class="section-title">Смена — ${shift.baristaName}</div>
+      <div class="shift-steps">
+        <div class="shift-step done"><span class="ss-label">Пришёл</span><span class="ss-time">${shift.checkInTime || '—'}</span></div>
+        <div class="shift-step ${shift.openTime?'done':''}"><span class="ss-label">Открыл точку</span><span class="ss-time">${shift.openTime || '—'}</span></div>
+        <div class="shift-step ${shift.closeTime?'done':''}"><span class="ss-label">Закрыл точку</span><span class="ss-time">${shift.closeTime || '—'}</span></div>
+        <div class="shift-step ${shift.checkOutTime?'done':''}"><span class="ss-label">Ушёл</span><span class="ss-time">${shift.checkOutTime || '—'}</span></div>
+      </div>
+      ${!shift.closeTime ? `<button class="primary-btn" style="width:100%;padding:14px;" onclick="closePoint()">Закрыть точку</button>` :
+        !shift.checkOutTime ? `<button class="primary-btn" style="width:100%;padding:14px;" onclick="checkOutAndLeave()">Завершить смену и выйти</button>` :
+        `<div class="empty-state">Смена завершена ✅</div>`}
+    </div>`;
+}
+
+/* ---------------- Админ ---------------- */
 function renderAdmin(){
   const totalRevenue = CACHE.kassas.reduce((s,k)=>s+(k.total||0),0);
   const totalStockUnits = CACHE.products.reduce((s,p)=>s+(p.stock||0),0);
@@ -398,12 +657,15 @@ function renderAdmin(){
   const tabs = [
     {id:'overview', label:'Обзор', icon:'📊'}, {id:'warehouse', label:'Склад', icon:'📦'},
     {id:'kassas', label:'Кассы', icon:'🏪'}, {id:'receipts', label:'Чеки', icon:'🧾'},
+    {id:'reports', label:'Отчёты', icon:'📈'}, {id:'shifts', label:'Смены', icon:'🕒'},
   ];
   let content = '';
   if(STATE.adminTab === 'overview') content = renderAdminOverview(totalRevenue, totalStockUnits, outOfStock, receiptsCount);
   if(STATE.adminTab === 'warehouse') content = renderAdminWarehouse();
   if(STATE.adminTab === 'kassas') content = renderAdminKassas();
   if(STATE.adminTab === 'receipts') content = renderAdminReceipts();
+  if(STATE.adminTab === 'reports') content = renderAdminReports();
+  if(STATE.adminTab === 'shifts') content = renderAdminShifts();
   return `
   <div class="shell">
     <div class="sidebar">
@@ -436,11 +698,12 @@ function renderAdminOverview(totalRevenue, totalStockUnits, outOfStock, receipts
         <div class="card kassa-card" onclick="openKassaReceipts('${k.id}')">
           <div class="kc-num">Касса №${k.id}</div><div class="kc-addr">📍 ${k.address}</div>
           <div class="kc-total-label">Сумма кассы</div><div class="kc-total">${money(k.total)}</div>
+          <div class="kc-split">💵 ${money(k.totalCash||0)} · 💳 ${money(k.totalCard||0)}</div>
         </div>`).join('')}
     </div>`}
     <div class="section-title">Последние чеки</div>
     <div class="card">
-      ${CACHE.receipts.length === 0 ? `<div class="empty-state"><div class="e-icon">🧾</div>Чеков пока нет — они появятся после первой продажи у бариста</div>` :
+      ${CACHE.receipts.length === 0 ? `<div class="empty-state"><div class="e-icon">🧾</div>Чеков пока нет — они появятся после первой продажи у бариста</div></div>` :
         CACHE.receipts.slice(0,5).map(r => renderReceiptRow(r)).join('')}
     </div>`;
 }
@@ -449,13 +712,16 @@ function openKassaReceipts(kassaId){ STATE.adminTab = 'receipts'; STATE.adminRec
 
 function renderAdminWarehouse(){
   const cats = ['Кофе','Круассаны','Сендвичи','Напитки','Десерты'];
+  let products = CACHE.products;
+  if(STATE.warehouseSearch) products = products.filter(p=>p.name.toLowerCase().includes(STATE.warehouseSearch.toLowerCase()));
   return `
     <div class="page-head"><div><h1>Склад</h1><p class="sub">Остатки и цены — то, что видит бариста в реальном времени</p></div></div>
+    <input id="warehouse-search" class="search-input" style="margin-bottom:16px;" placeholder="Поиск товара по названию…" value="${STATE.warehouseSearch}" oninput="liveInput(this,'warehouseSearch')">
     <div class="card" style="padding:18px 8px;">
-      ${CACHE.products.length === 0 ? `<div class="empty-state"><div class="e-icon">📦</div>Склад пуст — добавьте первый товар ниже</div>` : `
+      ${products.length === 0 ? `<div class="empty-state"><div class="e-icon">📦</div>${CACHE.products.length===0 ? 'Склад пуст — добавьте первый товар ниже' : 'Ничего не найдено по запросу'}</div>` : `
       <table class="wh-table">
         <thead><tr><th>Товар</th><th>Категория</th><th>Цена</th><th>Остаток</th><th>Ед.</th><th></th></tr></thead>
-        <tbody>${CACHE.products.map(p => renderWarehouseRow(p)).join('')}</tbody>
+        <tbody>${products.map(p => renderWarehouseRow(p)).join('')}</tbody>
       </table>`}
       <form class="add-row-form" onsubmit="addProduct(event)">
         <input required name="name" placeholder="Название товара" style="flex:2;min-width:160px;">
@@ -525,6 +791,7 @@ function renderAdminKassas(){
         <div class="card kassa-card" onclick="openKassaReceipts('${k.id}')">
           <div class="kc-num">Касса №${k.id}</div><div class="kc-addr">📍 ${k.address}</div>
           <div class="kc-total-label">Сумма кассы</div><div class="kc-total">${money(k.total)}</div>
+          <div class="kc-split">💵 ${money(k.totalCash||0)} · 💳 ${money(k.totalCard||0)}</div>
         </div>`).join('')}
     </div>`}
     <div class="card" style="padding:20px;">
@@ -542,13 +809,17 @@ async function addKassa(e){
   const f = e.target;
   const id = f.id.value.trim();
   if(CACHE.kassas.some(k=>k.id===id)){ showToast('Касса с таким номером уже есть', true); return; }
-  try{ await kassasCol.doc(id).set({ address: f.address.value.trim(), total: 0 }); showToast('Касса добавлена'); render(); }
+  try{ await kassasCol.doc(id).set({ address: f.address.value.trim(), total: 0, totalCash: 0, totalCard: 0 }); showToast('Касса добавлена'); render(); }
   catch(err){ showToast('Ошибка добавления кассы: ' + err.message, true); }
 }
 
 function renderAdminReceipts(){
   const filter = STATE.adminReceiptFilter;
-  const list = CACHE.receipts.filter(r => filter==='all' ? true : r.kassaId === filter);
+  let list = CACHE.receipts.filter(r => filter==='all' ? true : r.kassaId === filter);
+  if(STATE.receiptSearch){
+    const q = STATE.receiptSearch.toLowerCase();
+    list = list.filter(r => (r.number||'').includes(STATE.receiptSearch) || (r.kassaAddress||'').toLowerCase().includes(q));
+  }
   return `
     <div class="page-head"><div><h1>Чеки</h1><p class="sub">История всех заказов по каждой кассе</p></div></div>
     <div class="filter-bar">
@@ -556,6 +827,7 @@ function renderAdminReceipts(){
         <option value="all" ${filter==='all'?'selected':''}>Все кассы</option>
         ${CACHE.kassas.map(k=>`<option value="${k.id}" ${filter===k.id?'selected':''}>Касса №${k.id} — ${k.address}</option>`).join('')}
       </select>
+      <input id="receipt-search" class="search-input" placeholder="Поиск по номеру чека или адресу…" value="${STATE.receiptSearch}" oninput="liveInput(this,'receiptSearch')">
     </div>
     <div class="card">
       ${list.length===0 ? `<div class="empty-state"><div class="e-icon">🧾</div>Чеков не найдено</div>` : list.map(r=>renderReceiptRow(r)).join('')}
@@ -565,11 +837,12 @@ function renderAdminReceipts(){
 function setReceiptFilter(val){ STATE.adminReceiptFilter = val; render(); }
 
 function renderReceiptRow(r){
+  const pm = r.paymentMethod === 'cash' ? '💵 Наличные' : r.paymentMethod === 'card' ? '💳 Карта' : '';
   return `
     <div class="receipt-row" onclick='openReceiptModal(${JSON.stringify(r.id)})'>
       <div class="rr-left">
         <div class="rr-icon">🧾</div>
-        <div><div class="rr-id">Чек №${r.number || r.id}</div><div class="rr-meta">Касса №${r.kassaId} · ${r.kassaAddress} · ${r.date} ${r.time}</div></div>
+        <div><div class="rr-id">Чек №${r.number || r.id}</div><div class="rr-meta">Касса №${r.kassaId} · ${r.kassaAddress} · ${r.date} ${r.time}${pm ? ' · ' + pm : ''}</div></div>
       </div>
       <div class="rr-total">${money(r.total)}</div>
     </div>`;
@@ -578,32 +851,101 @@ function renderReceiptRow(r){
 function openReceiptModal(receiptId){ STATE.modalReceipt = CACHE.receipts.find(r=>r.id===receiptId); render(); }
 function closeReceiptModal(){ STATE.modalReceipt = null; render(); }
 
+function renderAdminReports(){
+  const groups = {};
+  CACHE.receipts.forEach(r=>{
+    const key = r.date + '|' + r.kassaId;
+    if(!groups[key]) groups[key] = { date:r.date, kassaId:r.kassaId, kassaAddress:r.kassaAddress, count:0, total:0, cash:0, card:0 };
+    groups[key].count++; groups[key].total += r.total;
+    if(r.paymentMethod === 'cash') groups[key].cash += r.total;
+    else if(r.paymentMethod === 'card') groups[key].card += r.total;
+  });
+  let rows = Object.values(groups).sort((a,b)=> (b.date+b.kassaId).localeCompare(a.date+a.kassaId));
+  if(STATE.reportKassaFilter !== 'all') rows = rows.filter(r=>r.kassaId===STATE.reportKassaFilter);
+  return `
+    <div class="page-head"><div><h1>Отчёты по кассам</h1><p class="sub">Дневная выручка, средний чек и способы оплаты</p></div></div>
+    <div class="filter-bar">
+      <select onchange="STATE.reportKassaFilter=this.value; render();">
+        <option value="all">Все кассы</option>
+        ${CACHE.kassas.map(k=>`<option value="${k.id}" ${STATE.reportKassaFilter===k.id?'selected':''}>Касса №${k.id} — ${k.address}</option>`).join('')}
+      </select>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      ${rows.length===0 ? `<div class="empty-state"><div class="e-icon">📈</div>Пока нет данных для отчёта</div>` : `
+      <table class="wh-table">
+        <thead><tr><th>Дата</th><th>Касса</th><th>Продано</th><th>Средний чек</th><th>Чеков</th><th>Нал</th><th>Карта</th><th>Итого</th></tr></thead>
+        <tbody>
+          ${rows.map(r=>`
+          <tr>
+            <td>${r.date}</td>
+            <td>№${r.kassaId}<br><span style="font-size:11px;color:var(--muted);">${r.kassaAddress}</span></td>
+            <td class="mono">${money(r.total)}</td>
+            <td class="mono">${money(Math.round(r.total/r.count))}</td>
+            <td>${r.count}</td>
+            <td class="mono">${money(r.cash)}</td>
+            <td class="mono">${money(r.card)}</td>
+            <td class="mono"><b>${money(r.cash+r.card)}</b></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    </div>`;
+}
+
+function renderAdminShifts(){
+  const rows = [...CACHE.shifts].sort((a,b)=> (b.date+ (b.checkInTime||'')).localeCompare(a.date+(a.checkInTime||'')));
+  return `
+    <div class="page-head"><div><h1>Смены</h1><p class="sub">Приход, открытие и закрытие точки по бариста</p></div></div>
+    <div class="card" style="overflow-x:auto;">
+      ${rows.length===0 ? `<div class="empty-state"><div class="e-icon">🕒</div>Смен пока нет</div>` : `
+      <table class="wh-table">
+        <thead><tr><th>Дата</th><th>Касса</th><th>Бариста</th><th>Пришёл</th><th>Открыл</th><th>Закрыл</th><th>Ушёл</th><th>Статус</th></tr></thead>
+        <tbody>
+          ${rows.map(s=>`
+          <tr>
+            <td>${s.date}</td>
+            <td>№${s.kassaId}</td>
+            <td>${s.baristaName||'—'}</td>
+            <td class="mono">${s.checkInTime||'—'}</td>
+            <td class="mono">${s.openTime||'—'}</td>
+            <td class="mono">${s.closeTime||'—'}</td>
+            <td class="mono">${s.checkOutTime||'—'}</td>
+            <td><span class="stock-pill ${s.status==='closed'?'stock-ok':'stock-low'}">${s.status==='closed'?'закрыта':'открыта'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    </div>`;
+}
+
+/* ---------------- Бариста ---------------- */
 function renderBarista(){
   const kassa = CACHE.kassas.find(k=>k.id===STATE.kassaId);
+  const shift = CACHE.shifts.find(s=>s.id===STATE.currentShiftId);
   if(!kassa){
     return `<div class="boot-screen"><div class="boot-error"><h3>Касса недоступна</h3><p>Эта касса была удалена. Выйдите и выберите другую.</p><br><button class="primary-btn" onclick="logout()">Выйти</button></div></div>`;
   }
   const cats = ['Все', ...Array.from(new Set(CACHE.products.map(p=>p.category)))];
   const activeCat = STATE.baristaCategory;
-  const products = CACHE.products.filter(p => activeCat==='Все' || p.category===activeCat);
+  let products = CACHE.products.filter(p => activeCat==='Все' || p.category===activeCat);
+  if(STATE.baristaSearch) products = products.filter(p=>p.name.toLowerCase().includes(STATE.baristaSearch.toLowerCase()));
   const cartTotal = STATE.cart.reduce((s,i)=>s+i.price*i.qty,0);
-  return `
-  <div class="shell">
-    <div class="sidebar">
-      <div class="sb-brand"><div class="brand-mark">☕</div><span>Global Coffee</span></div>
-      <div class="nav-item active"><span class="nav-icon">🧾</span> Заказ</div>
-      <div class="sb-foot">
-        <div class="who">Касса №${kassa.id}<br><b>${kassa.address}</b></div>
-        <button class="logout-btn" onclick="logout()">Выйти</button>
-      </div>
-    </div>
-    <div class="main">
+
+  let mainContent;
+  if(STATE.baristaTab === 'shift'){
+    mainContent = `
+      <div class="page-head"><div><h1>Смена</h1><p class="sub">Отметки прихода, открытия и закрытия точки</p></div></div>
+      ${renderShiftTab(shift)}`;
+  }else if(CACHE.products.length === 0){
+    mainContent = `
       <div class="page-head"><div><h1>Новый заказ</h1><p class="sub">Выберите позиции — сумма посчитается автоматически</p></div></div>
-      ${CACHE.products.length === 0 ? `<div class="card"><div class="empty-state"><div class="e-icon">📦</div>Склад пуст. Попросите администратора добавить товары.</div></div>` : `
+      <div class="card"><div class="empty-state"><div class="e-icon">📦</div>Склад пуст. Попросите администратора добавить товары.</div></div>`;
+  }else{
+    mainContent = `
+      <div class="page-head"><div><h1>Новый заказ</h1><p class="sub">Выберите позиции — сумма посчитается автоматически</p></div></div>
       <div class="pos-shell">
         <div class="pos-main">
+          <input id="barista-search" class="search-input" style="margin-bottom:16px;" placeholder="Поиск товара…" value="${STATE.baristaSearch}" oninput="liveInput(this,'baristaSearch')">
           <div class="cat-tabs">${cats.map(c => `<button class="cat-tab ${activeCat===c?'active':''}" onclick="setBaristaCategory('${c}')">${c}</button>`).join('')}</div>
-          <div class="product-grid">${products.map(p => renderProductCard(p)).join('')}</div>
+          <div class="product-grid">${products.length===0 ? `<div class="empty-state"><div class="e-icon">🔍</div>Ничего не найдено</div>` : products.map(p => renderProductCard(p)).join('')}</div>
         </div>
         <div class="cart-panel">
           <div class="cart-head"><h3>Текущий заказ</h3><span class="cart-kassa-tag">№${kassa.id}</span></div>
@@ -620,15 +962,33 @@ function renderBarista(){
                 </div>`).join('')}
           </div>
           <div class="cart-total-row"><span class="cart-total-label">Итого</span><span class="cart-total-num">${money(cartTotal)}</span></div>
-          <button class="pay-btn ${STATE.cart.length>0?'ready':''} ${STATE.paying?'loading':''}" onclick="payOrder()">${STATE.paying ? 'Обработка…' : 'Оплата прошла ✔'}</button>
+          <div class="pm-grid">
+            <button class="pm-btn ${STATE.paymentMethod==='cash'?'active':''}" onclick="setPaymentMethod('cash')">💵 Наличные</button>
+            <button class="pm-btn ${STATE.paymentMethod==='card'?'active':''}" onclick="setPaymentMethod('card')">💳 Карта</button>
+          </div>
+          <button class="pay-btn ${STATE.cart.length>0 && STATE.paymentMethod ?'ready':''} ${STATE.paying?'loading':''}" onclick="payOrder()">${STATE.paying ? 'Обработка…' : 'Оплата прошла ✔'}</button>
           ${STATE.cart.length>0 && !STATE.paying ? `<button class="clear-cart-btn" onclick="clearCart()">Очистить заказ</button>` : ''}
         </div>
-      </div>`}
+      </div>`;
+  }
+
+  return `
+  <div class="shell">
+    <div class="sidebar">
+      <div class="sb-brand"><div class="brand-mark">☕</div><span>Global Coffee</span></div>
+      <button class="nav-item ${STATE.baristaTab==='pos'?'active':''}" onclick="setBaristaTab('pos')"><span class="nav-icon">🧾</span> Заказ</button>
+      <button class="nav-item ${STATE.baristaTab==='shift'?'active':''}" onclick="setBaristaTab('shift')"><span class="nav-icon">🕒</span> Смена</button>
+      <div class="sb-foot">
+        <div class="who">Касса №${kassa.id}<br><b>${kassa.address}</b>${shift ? `<br>${shift.baristaName}` : ''}</div>
+        <button class="logout-btn" onclick="logout()">Выйти</button>
+      </div>
     </div>
+    <div class="main">${mainContent}</div>
   </div>`;
 }
 
 function setBaristaCategory(cat){ STATE.baristaCategory = cat; render(); }
+function setPaymentMethod(m){ STATE.paymentMethod = m; render(); }
 
 function renderProductCard(p){
   const out = p.stock === 0;
@@ -664,12 +1024,14 @@ function changeQty(productId, delta){
   render();
 }
 
-function clearCart(){ STATE.cart = []; render(); }
+function clearCart(){ STATE.cart = []; STATE.paymentMethod = null; render(); }
 
 async function payOrder(){
   if(STATE.cart.length===0 || STATE.paying) return;
+  if(!STATE.paymentMethod){ showToast('Выберите способ оплаты', true); return; }
   STATE.paying = true; render();
   const cartSnapshot = STATE.cart.map(i=>({...i}));
+  const paymentMethod = STATE.paymentMethod;
   const kassaId = STATE.kassaId;
   const kassaRef = kassasCol.doc(kassaId);
   const counterRef = metaCol.doc('counters');
@@ -689,29 +1051,41 @@ async function payOrder(){
       }
       const total = cartSnapshot.reduce((s,i)=>s+i.price*i.qty,0);
       const nextSeq = (counterDoc.exists ? (counterDoc.data().receiptSeq||0) : 0) + 1;
+      const now = new Date();
+      const kassaData = kassaDoc.data();
       for(let idx=0; idx<productDocs.length; idx++){
         const pdoc = productDocs[idx]; const item = cartSnapshot[idx];
-        tx.update(productRefs[idx], { stock: (pdoc.data().stock||0) - item.qty });
+        const newStock = (pdoc.data().stock||0) - item.qty;
+        tx.update(productRefs[idx], { stock: newStock });
+        if(newStock === 0){
+          tx.set(eventsCol.doc(), {
+            type: 'sold_out', productName: item.name, kassaId, kassaAddress: kassaData.address,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(), date: now.toLocaleDateString('ru-RU')
+          });
+        }
       }
-      const kassaData = kassaDoc.data();
-      tx.update(kassaRef, { total: (kassaData.total||0) + total });
+      const kassaPatch = { total: (kassaData.total||0) + total };
+      if(paymentMethod === 'cash') kassaPatch.totalCash = (kassaData.totalCash||0) + total;
+      else kassaPatch.totalCard = (kassaData.totalCard||0) + total;
+      tx.update(kassaRef, kassaPatch);
       tx.set(counterRef, { receiptSeq: nextSeq }, { merge: true });
-      const now = new Date();
       const receipt = {
         kassaId: kassaId, kassaAddress: kassaData.address, number: String(nextSeq).padStart(4,'0'),
         items: cartSnapshot.map(i=>({name:i.name, qty:i.qty, price:i.price, emoji:i.emoji})),
-        total, date: now.toLocaleDateString('ru-RU'), time: now.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
+        total, paymentMethod,
+        date: now.toLocaleDateString('ru-RU'), time: now.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       tx.set(receiptRef, receipt);
       return { id: receiptRef.id, ...receipt };
     });
-    STATE.cart = []; STATE.modalReceipt = receiptDisplay; showToast('Оплата прошла успешно');
+    STATE.cart = []; STATE.paymentMethod = null; STATE.modalReceipt = receiptDisplay; showToast('Оплата прошла успешно');
   }catch(err){ showToast(err.message || 'Ошибка оплаты, попробуйте ещё раз', true); }
   STATE.paying = false; render();
 }
 
 function renderReceiptModal(r){
+  const pm = r.paymentMethod === 'cash' ? '💵 Наличные' : r.paymentMethod === 'card' ? '💳 Карта' : '—';
   return `
     <div class="modal-overlay" onclick="if(event.target===this) closeReceiptModal()">
       <div class="receipt-modal">
@@ -721,6 +1095,7 @@ function renderReceiptModal(r){
           <div class="r-meta-row"><span>Адрес</span><b>${r.kassaAddress}</b></div>
           <div class="r-meta-row"><span>Дата</span><b>${r.date}</b></div>
           <div class="r-meta-row"><span>Время</span><b>${r.time}</b></div>
+          <div class="r-meta-row"><span>Оплата</span><b>${pm}</b></div>
           <div class="r-divider"></div>
           ${r.items.map(i=>`<div class="r-item"><span class="ri-name">${i.emoji} ${i.name} <span class="ri-qty">× ${i.qty}</span></span><span class="mono">${money(i.price*i.qty)}</span></div>`).join('')}
           <div class="r-total-row"><span class="rt-label">Итого к оплате</span><span class="rt-num">${money(r.total)}</span></div>
